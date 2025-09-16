@@ -1,24 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Leaf } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Leaf, Loader2 } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, signUp, user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
+    setIsLoading(true);
+    
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast({
+        title: "Erro no login",
+        description: error.message === "Invalid login credentials" 
+          ? "E-mail ou senha incorretos" 
+          : "Erro ao fazer login. Tente novamente.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Bem-vindo ao Diário Alimentar",
+      });
+    }
+    
+    setIsLoading(false);
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup:", { name, email, password });
+    setIsLoading(true);
+    
+    const { error } = await signUp(email, password);
+    
+    if (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: error.message === "User already registered" 
+          ? "Este e-mail já está cadastrado"
+          : "Erro ao criar conta. Tente novamente.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Conta criada com sucesso!",
+        description: "Verifique seu e-mail para confirmar a conta",
+      });
+    }
+    
+    setIsLoading(false);
   };
 
   return (
@@ -66,8 +118,19 @@ const Login = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full btn-primary-gradient text-primary-foreground hover:scale-105">
-                  Entrar
+                <Button 
+                  type="submit" 
+                  className="w-full btn-primary-gradient text-primary-foreground hover:scale-105"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Entrando...
+                    </>
+                  ) : (
+                    "Entrar"
+                  )}
                 </Button>
               </form>
             </TabsContent>
@@ -107,8 +170,19 @@ const Login = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full btn-primary-gradient text-primary-foreground hover:scale-105">
-                  Cadastrar
+                <Button 
+                  type="submit" 
+                  className="w-full btn-primary-gradient text-primary-foreground hover:scale-105"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Cadastrando...
+                    </>
+                  ) : (
+                    "Cadastrar"
+                  )}
                 </Button>
               </form>
             </TabsContent>
