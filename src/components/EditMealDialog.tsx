@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,15 @@ export const EditMealDialog = ({ open, onOpenChange, onEdit, meal }: EditMealDia
   const [name, setName] = useState(meal.name);
   const [time, setTime] = useState(meal.time);
   const [foods, setFoods] = useState(meal.foods);
+
+  // Update state when meal prop changes
+  useEffect(() => {
+    if (meal) {
+      setName(meal.name);
+      setTime(meal.time);
+      setFoods(meal.foods);
+    }
+  }, [meal]);
 
   const handleSubmit = () => {
     const editedMeal = {
