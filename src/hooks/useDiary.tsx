@@ -65,7 +65,6 @@ export const useDiary = () => {
 
   const addEntry = async (entry: Omit<DiaryEntry, 'id'>) => {
     try {
-      console.log('Adding entry with date:', entry.date);
       
       const { data, error } = await supabase
         .from('diario')
@@ -85,8 +84,6 @@ export const useDiary = () => {
 
       if (error) throw error;
 
-      console.log('Database returned:', data);
-
       const newEntry: DiaryEntry = {
         id: data.id,
         date: data.data, // Keep as string from database
@@ -101,8 +98,6 @@ export const useDiary = () => {
         },
         notes: data.notas || ''
       };
-
-      console.log('Formatted entry:', newEntry);
 
       setEntries([newEntry, ...entries]);
       toast.success('Entrada do diário salva com sucesso!');
