@@ -2,23 +2,49 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Target, Droplets, Dumbbell, UtensilsCrossed, Clock } from "lucide-react";
+import { useDiary } from "@/hooks/useDiary";
+import { useEffect, useState } from "react";
 
 const Reports = () => {
-  // Mock data for demonstration
-  const weeklyStats = {
-    adherence: 85,
-    workouts: 5,
-    totalWorkouts: 6,
-    cardioMinutes: 180,
-    waterGoalDays: 6,
-    cheatMeals: 2
-  };
+  const { entries, loading } = useDiary();
+  const [weeklyStats, setWeeklyStats] = useState({
+    adherence: 0,
+    workouts: 0,
+    totalWorkouts: 7,
+    cardioMinutes: 0,
+    waterGoalDays: 0,
+    cheatMeals: 0
+  });
 
   const achievements = [
-    { title: "Guerreiro da Água", description: "Bebeu 3L por 7 dias seguidos", completed: true },
+    { title: "Guerreiro da Água", description: "Bebeu 3L por 7 dias seguidos", completed: false },
     { title: "Foco Total", description: "100% de adesão à dieta por 5 dias", completed: false },
-    { title: "Cardio Master", description: "200 min de cardio na semana", completed: true }
+    { title: "Cardio Master", description: "200 min de cardio na semana", completed: false }
   ];
+
+  useEffect(() => {
+    if (entries.length > 0) {
+      // Calculate stats from last 7 days
+      const last7Days = entries.slice(0, 7);
+      
+      const workoutDays = last7Days.filter(entry => entry.goals.workout).length;
+      const cardioTotal = last7Days.reduce((acc, entry) => acc + entry.goals.cardio, 0);
+      const waterGoalDays = last7Days.filter(entry => entry.goals.water >= entry.goals.waterGoal).length;
+      const cheatMealDays = last7Days.filter(entry => entry.hasCheatMeal).length;
+      const dietCompliantDays = last7Days.filter(entry => entry.goals.dietCompliance).length;
+      
+      const adherence = last7Days.length > 0 ? Math.round((dietCompliantDays / last7Days.length) * 100) : 0;
+      
+      setWeeklyStats({
+        adherence,
+        workouts: workoutDays,
+        totalWorkouts: 7,
+        cardioMinutes: cardioTotal,
+        waterGoalDays,
+        cheatMeals: cheatMealDays
+      });
+    }
+  }, [entries]);
 
   if (loading) {
     return (

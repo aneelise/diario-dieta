@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 export interface Food {
   name: string;
   quantity: string;
+  [key: string]: string; // Add index signature for JSON compatibility
 }
 
 export interface Meal {
@@ -40,7 +41,7 @@ export const useDiet = () => {
         id: meal.id,
         name: meal.refeicao || '',
         time: meal.hora || '08:00',
-        foods: meal.alimentos || []
+        foods: Array.isArray(meal.alimentos) ? meal.alimentos as Food[] : []
       }));
 
       setMeals(formattedMeals);
@@ -60,7 +61,7 @@ export const useDiet = () => {
           usuario_id: user?.id,
           refeicao: meal.name,
           hora: meal.time,
-          alimentos: meal.foods
+          alimentos: meal.foods as any
         })
         .select()
         .single();
@@ -71,7 +72,7 @@ export const useDiet = () => {
         id: data.id,
         name: data.refeicao || '',
         time: data.hora || '08:00',
-        foods: data.alimentos || []
+        foods: Array.isArray(data.alimentos) ? data.alimentos as Food[] : []
       };
 
       setMeals([...meals, newMeal]);
@@ -91,7 +92,7 @@ export const useDiet = () => {
         .update({
           refeicao: updatedMeal.name,
           hora: updatedMeal.time,
-          alimentos: updatedMeal.foods
+          alimentos: updatedMeal.foods as any
         })
         .eq('id', updatedMeal.id);
 

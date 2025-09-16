@@ -71,6 +71,7 @@ export type Database = {
         Row: {
           alimentos: Json | null
           created_at: string | null
+          hora: string | null
           id: string
           refeicao: string | null
           usuario_id: string
@@ -78,6 +79,7 @@ export type Database = {
         Insert: {
           alimentos?: Json | null
           created_at?: string | null
+          hora?: string | null
           id?: string
           refeicao?: string | null
           usuario_id: string
@@ -85,6 +87,7 @@ export type Database = {
         Update: {
           alimentos?: Json | null
           created_at?: string | null
+          hora?: string | null
           id?: string
           refeicao?: string | null
           usuario_id?: string

@@ -4,66 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit3, Plus } from "lucide-react";
 import { MealCard } from "@/components/MealCard";
 import { EditMealDialog } from "@/components/EditMealDialog";
-
-// Mock data for demonstration
-const mockMeals = [
-  {
-    id: "1",
-    name: "Pré-treino",
-    time: "06:00",
-    foods: [
-      { name: "Banana", quantity: "1 unidade" },
-      { name: "Aveia", quantity: "30g" },
-      { name: "Whey Protein", quantity: "1 scoop" }
-    ]
-  },
-  {
-    id: "2",
-    name: "Café da manhã",
-    time: "08:00", 
-    foods: [
-      { name: "Ovos mexidos", quantity: "2 unidades" },
-      { name: "Pão integral", quantity: "2 fatias" },
-      { name: "Abacate", quantity: "1/2 unidade" }
-    ]
-  },
-  {
-    id: "3",
-    name: "Almoço",
-    time: "12:30",
-    foods: [
-      { name: "Peito de frango grelhado", quantity: "150g" },
-      { name: "Arroz integral", quantity: "100g" },
-      { name: "Brócolis refogado", quantity: "100g" },
-      { name: "Salada verde", quantity: "À vontade" }
-    ]
-  },
-  {
-    id: "4",
-    name: "Lanche da tarde",
-    time: "15:30",
-    foods: [
-      { name: "Iogurte grego", quantity: "150g" },
-      { name: "Castanha do Brasil", quantity: "3 unidades" },
-      { name: "Fruta da época", quantity: "1 porção" }
-    ]
-  },
-  {
-    id: "5", 
-    name: "Jantar",
-    time: "19:00",
-    foods: [
-      { name: "Salmão grelhado", quantity: "120g" },
-      { name: "Batata doce", quantity: "100g" },
-      { name: "Aspargos", quantity: "100g" }
-    ]
-  }
-];
+import { useDiet, Meal } from "@/hooks/useDiet";
 
 const Diet = () => {
-  const [meals, setMeals] = useState(mockMeals);
+  const { meals, loading, addMeal, updateMeal, deleteMeal } = useDiet();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingMeal, setEditingMeal] = useState<any>(null);
+  const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
 
   const handleEditMeal = (meal: Meal) => {
     setEditingMeal(meal);
