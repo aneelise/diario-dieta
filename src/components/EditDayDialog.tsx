@@ -30,9 +30,15 @@ export const EditDayDialog = ({ open, onOpenChange, onEdit, day }: EditDayDialog
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const handleSubmit = () => {
+    // Fix timezone issue by formatting date in local timezone
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const dayOfMonth = String(date.getDate()).padStart(2, '0');
+    const localDateString = `${year}-${month}-${dayOfMonth}`;
+    
     const editedDay = {
       ...day,
-      date: date.toISOString().split('T')[0],
+      date: localDateString,
       hasCheatMeal,
       cheatMealDescription: hasCheatMeal ? cheatMealDescription : "",
       goals: {
