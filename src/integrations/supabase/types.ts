@@ -14,7 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      diario: {
+        Row: {
+          agua_ml: number | null
+          cardio_minutos: number | null
+          created_at: string | null
+          data: string
+          hora: string | null
+          id: string
+          notas: string | null
+          refeicao_livre: string | null
+          refeicao_livre_ativa: boolean | null
+          seguir_dieta: boolean | null
+          treino: boolean | null
+          usuario_id: string
+        }
+        Insert: {
+          agua_ml?: number | null
+          cardio_minutos?: number | null
+          created_at?: string | null
+          data: string
+          hora?: string | null
+          id?: string
+          notas?: string | null
+          refeicao_livre?: string | null
+          refeicao_livre_ativa?: boolean | null
+          seguir_dieta?: boolean | null
+          treino?: boolean | null
+          usuario_id: string
+        }
+        Update: {
+          agua_ml?: number | null
+          cardio_minutos?: number | null
+          created_at?: string | null
+          data?: string
+          hora?: string | null
+          id?: string
+          notas?: string | null
+          refeicao_livre?: string | null
+          refeicao_livre_ativa?: boolean | null
+          seguir_dieta?: boolean | null
+          treino?: boolean | null
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diario_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dieta: {
+        Row: {
+          alimentos: Json | null
+          created_at: string | null
+          id: string
+          refeicao: string | null
+          usuario_id: string
+        }
+        Insert: {
+          alimentos?: Json | null
+          created_at?: string | null
+          id?: string
+          refeicao?: string | null
+          usuario_id: string
+        }
+        Update: {
+          alimentos?: Json | null
+          created_at?: string | null
+          id?: string
+          refeicao?: string | null
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dieta_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usuarios: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          nome?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

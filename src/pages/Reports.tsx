@@ -20,6 +20,26 @@ const Reports = () => {
     { title: "Cardio Master", description: "200 min de cardio na semana", completed: true }
   ];
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="text-center py-8 text-muted-foreground">
+          Carregando relatórios...
+        </div>
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="text-center py-8 text-muted-foreground">
+          Nenhum dado disponível. Adicione entradas no diário para ver os relatórios!
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6 space-y-6">
       <div>

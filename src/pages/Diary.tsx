@@ -5,56 +5,31 @@ import { Plus, Edit3, CheckCircle2, Clock, Droplets, Dumbbell } from "lucide-rea
 import { DayCard } from "@/components/DayCard";
 import { AddDayDialog } from "@/components/AddDayDialog";
 import { EditDayDialog } from "@/components/EditDayDialog";
-
-// Mock data for demonstration
-const mockDays = [
-  {
-    id: "1",
-    date: new Date().toISOString().split('T')[0],
-    hasCheatMeal: true,
-    cheatMealDescription: "Pizza margherita com amigos",
-    goals: {
-      water: 2.5,
-      waterGoal: 3,
-      workout: true,
-      cardio: 30,
-      dietCompliance: false
-    },
-    notes: "Dia difícil, mas consegui manter o foco na dieta."
-  },
-  {
-    id: "2", 
-    date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-    hasCheatMeal: false,
-    cheatMealDescription: "",
-    goals: {
-      water: 3,
-      waterGoal: 3,
-      workout: true,
-      cardio: 45,
-      dietCompliance: true
-    },
-    notes: "Excelente dia! Bateu todas as metas."
-  }
-];
+import { useDiary, DiaryEntry } from "@/hooks/useDiary";
 
 const Diary = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingDay, setEditingDay] = useState<any>(null);
-  const [days, setDays] = useState(mockDays);
+  const [editingDay, setEditingDay] = useState<DiaryEntry | null>(null);
+  const { entries: days, loading, addEntry, updateEntry, deleteEntry } = useDiary();
 
-  const handleEditDay = (day: any) => {
+  const handleEditDay = (day: DiaryEntry) => {
     setEditingDay(day);
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveEdit = (editedDay: any) => {
-    setDays(days.map(day => day.id === editedDay.id ? editedDay : day));
+  const handleSaveEdit = async (editedDay: DiaryEntry) => {
+    await updateEntry(editedDay);
+    setIsEditDialogOpen(false);
   };
 
-  const handleDeleteDay = (dayId: string) => {
-    setDays(days.filter(day => day.id !== dayId));
+  const handleDeleteDay = async (dayId: string) => {
+    await deleteEntry(dayId);
+  };
+
+  const handleAddDay = async (newDay: Omit<DiaryEntry, 'id'>) => {
+    await addEntry(newDay);
+    setIsAddDialogOpen(false);
   };
 
   return (
@@ -74,23 +49,30 @@ const Diary = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {days.map((day) => (
-          <DayCard 
-            key={day.id} 
-            day={day} 
-            onEdit={handleEditDay}
-            onDelete={handleDeleteDay}
-          />
-        ))}
+        {loading ? (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            Carregando dados do diário...
+          </div>
+        ) : days.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            Nenhuma entrada encontrada. Adicione sua primeira entrada!
+          </div>
+        ) : (
+          days.map((day) => (
+            <DayCard 
+              key={day.id} 
+              day={day} 
+              onEdit={handleEditDay}
+              onDelete={handleDeleteDay}
+            />
+          ))
+        )}
       </div>
 
       <AddDayDialog 
         open={isAddDialogOpen} 
         onOpenChange={setIsAddDialogOpen}
-        onAdd={(newDay) => {
-          setDays([newDay, ...days]);
-          setIsAddDialogOpen(false);
-        }}
+        onAdd={handleAddDay}
       />
 
       {editingDay && (

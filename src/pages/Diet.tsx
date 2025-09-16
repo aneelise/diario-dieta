@@ -65,17 +65,18 @@ const Diet = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingMeal, setEditingMeal] = useState<any>(null);
 
-  const handleEditMeal = (meal: any) => {
+  const handleEditMeal = (meal: Meal) => {
     setEditingMeal(meal);
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveEdit = (editedMeal: any) => {
-    setMeals(meals.map(meal => meal.id === editedMeal.id ? editedMeal : meal));
+  const handleSaveEdit = async (editedMeal: Meal) => {
+    await updateMeal(editedMeal);
+    setIsEditDialogOpen(false);
   };
 
-  const handleDeleteMeal = (mealId: string) => {
-    setMeals(meals.filter(meal => meal.id !== mealId));
+  const handleDeleteMeal = async (mealId: string) => {
+    await deleteMeal(mealId);
   };
 
   return (
@@ -92,14 +93,24 @@ const Diet = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {meals.map((meal) => (
-          <MealCard 
-            key={meal.id} 
-            meal={meal} 
-            onEdit={handleEditMeal}
-            onDelete={handleDeleteMeal}
-          />
-        ))}
+        {loading ? (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            Carregando refeições...
+          </div>
+        ) : meals.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-muted-foreground">
+            Nenhuma refeição encontrada. Crie seu primeiro plano alimentar!
+          </div>
+        ) : (
+          meals.map((meal) => (
+            <MealCard 
+              key={meal.id} 
+              meal={meal} 
+              onEdit={handleEditMeal}
+              onDelete={handleDeleteMeal}
+            />
+          ))
+        )}
       </div>
 
       <Card className="border-dashed border-2 border-muted-foreground/30 bg-muted/30">
