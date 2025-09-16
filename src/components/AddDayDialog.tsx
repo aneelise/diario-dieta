@@ -35,6 +35,10 @@ export const AddDayDialog = ({ open, onOpenChange, onAdd }: AddDayDialogProps) =
     const day = String(date.getDate()).padStart(2, '0');
     const localDateString = `${year}-${month}-${day}`;
     
+    console.log('Selected date object:', date);
+    console.log('Formatted date string:', localDateString);
+    console.log('Original date day:', date.getDate());
+    
     const newDay = {
       id: Date.now().toString(),
       date: localDateString,
@@ -50,6 +54,7 @@ export const AddDayDialog = ({ open, onOpenChange, onAdd }: AddDayDialogProps) =
       notes
     };
     
+    console.log('New day object:', newDay);
     onAdd(newDay);
     
     // Reset form

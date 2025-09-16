@@ -41,7 +41,7 @@ export const useDiary = () => {
 
       const formattedEntries: DiaryEntry[] = data.map(entry => ({
         id: entry.id,
-        date: entry.data,
+        date: entry.data, // Keep as string from database
         hasCheatMeal: entry.refeicao_livre_ativa || false,
         cheatMealDescription: entry.refeicao_livre || '',
         goals: {
@@ -65,6 +65,8 @@ export const useDiary = () => {
 
   const addEntry = async (entry: Omit<DiaryEntry, 'id'>) => {
     try {
+      console.log('Adding entry with date:', entry.date);
+      
       const { data, error } = await supabase
         .from('diario')
         .insert({
@@ -83,9 +85,11 @@ export const useDiary = () => {
 
       if (error) throw error;
 
+      console.log('Database returned:', data);
+
       const newEntry: DiaryEntry = {
         id: data.id,
-        date: data.data,
+        date: data.data, // Keep as string from database
         hasCheatMeal: data.refeicao_livre_ativa || false,
         cheatMealDescription: data.refeicao_livre || '',
         goals: {
@@ -97,6 +101,8 @@ export const useDiary = () => {
         },
         notes: data.notas || ''
       };
+
+      console.log('Formatted entry:', newEntry);
 
       setEntries([newEntry, ...entries]);
       toast.success('Entrada do diário salva com sucesso!');
