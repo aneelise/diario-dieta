@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit3, Plus } from "lucide-react";
 import { MealCard } from "@/components/MealCard";
+import { EditMealDialog } from "@/components/EditMealDialog";
 
 // Mock data for demonstration
 const mockMeals = [
@@ -61,6 +62,21 @@ const mockMeals = [
 
 const Diet = () => {
   const [meals, setMeals] = useState(mockMeals);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingMeal, setEditingMeal] = useState<any>(null);
+
+  const handleEditMeal = (meal: any) => {
+    setEditingMeal(meal);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = (editedMeal: any) => {
+    setMeals(meals.map(meal => meal.id === editedMeal.id ? editedMeal : meal));
+  };
+
+  const handleDeleteMeal = (mealId: string) => {
+    setMeals(meals.filter(meal => meal.id !== mealId));
+  };
 
   return (
     <div className="container mx-auto px-4 py-6 space-y-6">
@@ -77,7 +93,12 @@ const Diet = () => {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {meals.map((meal) => (
-          <MealCard key={meal.id} meal={meal} />
+          <MealCard 
+            key={meal.id} 
+            meal={meal} 
+            onEdit={handleEditMeal}
+            onDelete={handleDeleteMeal}
+          />
         ))}
       </div>
 
@@ -92,6 +113,15 @@ const Diet = () => {
           </Button>
         </CardContent>
       </Card>
+
+      {editingMeal && (
+        <EditMealDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          onEdit={handleSaveEdit}
+          meal={editingMeal}
+        />
+      )}
     </div>
   );
 };

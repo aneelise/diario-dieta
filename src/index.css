@@ -42,6 +42,10 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Cheat meal colors */
+    --cheat-meal: 0 65% 51%;
+    --cheat-meal-foreground: 0 0% 98%;
+
     --border: 60 20% 90%;
     --input: 60 20% 94%;
     --ring: 60 95% 28%;
@@ -109,6 +113,10 @@ All colors MUST be HSL.
 
     --destructive: 0 80% 75%;
     --destructive-foreground: 60 12% 8%;
+
+    /* Cheat meal colors - dark mode */
+    --cheat-meal: 0 70% 65%;
+    --cheat-meal-foreground: 60 12% 8%;
 
     --border: 60 12% 18%;
     --input: 60 12% 16%;

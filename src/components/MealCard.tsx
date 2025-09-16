@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Edit3 } from "lucide-react";
+import { Clock, Edit3, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface MealCardProps {
   meal: {
@@ -13,9 +14,11 @@ interface MealCardProps {
       quantity: string;
     }>;
   };
+  onEdit?: (meal: MealCardProps['meal']) => void;
+  onDelete?: (mealId: string) => void;
 }
 
-export const MealCard = ({ meal }: MealCardProps) => {
+export const MealCard = ({ meal, onEdit, onDelete }: MealCardProps) => {
   return (
     <Card className="h-fit card-modern">
       <CardHeader className="pb-3">
@@ -42,11 +45,48 @@ export const MealCard = ({ meal }: MealCardProps) => {
           ))}
         </div>
 
-        <div className="flex justify-end pt-2 border-t border-border/50">
-          <Button variant="ghost" size="sm" className="gap-1 hover:bg-primary/10 hover:text-primary">
+        <div className="flex justify-end gap-2 pt-2 border-t border-border/50">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="gap-1 hover:bg-primary/10 hover:text-primary"
+            onClick={() => onEdit?.(meal)}
+          >
             <Edit3 className="h-3 w-3" />
             Editar
           </Button>
+          
+          {onDelete && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="gap-1 hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Excluir
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir refeição</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tem certeza que deseja excluir esta refeição? Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => onDelete(meal.id)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Excluir
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </CardContent>
     </Card>

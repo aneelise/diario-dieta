@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Edit3, CheckCircle2, Clock, Droplets, Dumbbell } from "lucide-react";
 import { DayCard } from "@/components/DayCard";
 import { AddDayDialog } from "@/components/AddDayDialog";
+import { EditDayDialog } from "@/components/EditDayDialog";
 
 // Mock data for demonstration
 const mockDays = [
@@ -39,11 +40,21 @@ const mockDays = [
 
 const Diary = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingDay, setEditingDay] = useState<any>(null);
   const [days, setDays] = useState(mockDays);
 
   const handleEditDay = (day: any) => {
-    // Aqui você pode implementar a lógica de edição
-    console.log("Editando dia:", day);
+    setEditingDay(day);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = (editedDay: any) => {
+    setDays(days.map(day => day.id === editedDay.id ? editedDay : day));
+  };
+
+  const handleDeleteDay = (dayId: string) => {
+    setDays(days.filter(day => day.id !== dayId));
   };
 
   return (
@@ -64,7 +75,12 @@ const Diary = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {days.map((day) => (
-          <DayCard key={day.id} day={day} onEdit={handleEditDay} />
+          <DayCard 
+            key={day.id} 
+            day={day} 
+            onEdit={handleEditDay}
+            onDelete={handleDeleteDay}
+          />
         ))}
       </div>
 
@@ -76,6 +92,15 @@ const Diary = () => {
           setIsAddDialogOpen(false);
         }}
       />
+
+      {editingDay && (
+        <EditDayDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          onEdit={handleSaveEdit}
+          day={editingDay}
+        />
+      )}
     </div>
   );
 };

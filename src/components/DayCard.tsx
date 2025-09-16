@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, Clock, Droplets, Dumbbell, UtensilsCrossed, Edit3 } from "lucide-react";
+import { CheckCircle2, Clock, Droplets, Dumbbell, UtensilsCrossed, Edit3, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface DayCardProps {
   day: {
@@ -22,9 +23,10 @@ interface DayCardProps {
     notes?: string;
   };
   onEdit?: (day: DayCardProps['day']) => void;
+  onDelete?: (dayId: string) => void;
 }
 
-export const DayCard = ({ day, onEdit }: DayCardProps) => {
+export const DayCard = ({ day, onEdit, onDelete }: DayCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const waterProgress = (day.goals.water / day.goals.waterGoal) * 100;
   const formatDate = (dateString: string) => {
@@ -47,7 +49,7 @@ export const DayCard = ({ day, onEdit }: DayCardProps) => {
   return (
     <Card className={cn(
       "card-modern transition-all duration-300",
-      day.hasCheatMeal && "border-warning/30 bg-gradient-to-br from-warning/5 to-warning/10",
+      day.hasCheatMeal && "border-cheat-meal/30 bg-gradient-to-br from-cheat-meal/5 to-cheat-meal/10",
       isToday && "ring-2 ring-primary/30 shadow-[var(--shadow-glow)]"
     )}>
       <CardHeader className="pb-3">
@@ -58,7 +60,7 @@ export const DayCard = ({ day, onEdit }: DayCardProps) => {
           <div className="flex items-center gap-2">
             {isToday && <Badge variant="default" className="text-xs btn-primary-gradient">Hoje</Badge>}
             {day.hasCheatMeal && (
-              <Badge variant="outline" className="text-xs text-warning border-warning/50 bg-warning/10">
+              <Badge variant="outline" className="text-xs text-cheat-meal border-cheat-meal/50 bg-cheat-meal/10">
                 {day.cheatMealDescription || "Refeição Livre"}
               </Badge>
             )}
@@ -84,22 +86,34 @@ export const DayCard = ({ day, onEdit }: DayCardProps) => {
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-2">
             <div className={cn(
-              "w-4 h-4 rounded-full flex items-center justify-center",
-              day.goals.workout ? "bg-success" : "bg-muted"
+              "w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200",
+              day.goals.workout 
+                ? "bg-success/90 shadow-md border-2 border-success" 
+                : "bg-error/10 border-2 border-error/30"
             )}>
-              {day.goals.workout && <CheckCircle2 className="h-3 w-3 text-success-foreground" />}
+              {day.goals.workout ? (
+                <CheckCircle2 className="h-3 w-3 text-success-foreground" />
+              ) : (
+                <X className="h-3 w-3 text-error" />
+              )}
             </div>
-            <span className="text-sm">Treino</span>
+            <span className="text-sm font-medium">Treino</span>
           </div>
 
           <div className="flex items-center gap-2">
             <div className={cn(
-              "w-4 h-4 rounded-full flex items-center justify-center",
-              day.goals.dietCompliance ? "bg-success" : "bg-muted"
+              "w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200",
+              day.goals.dietCompliance 
+                ? "bg-success/90 shadow-md border-2 border-success" 
+                : "bg-error/10 border-2 border-error/30"
             )}>
-              {day.goals.dietCompliance && <CheckCircle2 className="h-3 w-3 text-success-foreground" />}
+              {day.goals.dietCompliance ? (
+                <CheckCircle2 className="h-3 w-3 text-success-foreground" />
+              ) : (
+                <X className="h-3 w-3 text-error" />
+              )}
             </div>
-            <span className="text-sm">Dieta 100%</span>
+            <span className="text-sm font-medium">Dieta 100%</span>
           </div>
 
           <div className="flex items-center gap-2 col-span-2">
@@ -116,7 +130,7 @@ export const DayCard = ({ day, onEdit }: DayCardProps) => {
           </div>
         )}
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end gap-2 pt-2">
           <Button 
             variant="ghost" 
             size="sm" 
@@ -126,6 +140,38 @@ export const DayCard = ({ day, onEdit }: DayCardProps) => {
             <Edit3 className="h-3 w-3" />
             Editar
           </Button>
+          
+          {onDelete && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="gap-1 hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Excluir
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir dia</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => onDelete(day.id)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Excluir
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </CardContent>
     </Card>
