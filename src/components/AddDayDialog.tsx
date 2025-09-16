@@ -86,6 +86,7 @@ export const AddDayDialog = ({ open, onOpenChange, onAdd }: AddDayDialogProps) =
                     setCalendarOpen(false);
                   }}
                   initialFocus
+                  className="p-3 pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
