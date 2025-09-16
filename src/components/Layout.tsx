@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { BottomNavigation } from "./BottomNavigation";
+import { TopNavigation } from "./TopNavigation";
 
 const Layout = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <main className="flex-1 pb-16 md:pb-4">
+    <div className="min-h-screen bg-background">
+      <TopNavigation />
+      <main className="flex-1">
         <Outlet />
       </main>
-      <BottomNavigation />
     </div>
   );
 };

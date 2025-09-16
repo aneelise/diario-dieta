@@ -11,6 +11,7 @@ const mockDays = [
     id: "1",
     date: new Date().toISOString().split('T')[0],
     hasCheatMeal: true,
+    cheatMealDescription: "Pizza margherita com amigos",
     goals: {
       water: 2.5,
       waterGoal: 3,
@@ -24,6 +25,7 @@ const mockDays = [
     id: "2", 
     date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
     hasCheatMeal: false,
+    cheatMealDescription: "",
     goals: {
       water: 3,
       waterGoal: 3,
@@ -39,6 +41,11 @@ const Diary = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [days, setDays] = useState(mockDays);
 
+  const handleEditDay = (day: any) => {
+    // Aqui você pode implementar a lógica de edição
+    console.log("Editando dia:", day);
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -48,7 +55,7 @@ const Diary = () => {
         </div>
         <Button 
           onClick={() => setIsAddDialogOpen(true)}
-          className="gap-2"
+          className="gap-2 btn-primary-gradient text-primary-foreground hover:scale-105"
         >
           <Plus className="h-4 w-4" />
           Adicionar Dia
@@ -57,7 +64,7 @@ const Diary = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {days.map((day) => (
-          <DayCard key={day.id} day={day} />
+          <DayCard key={day.id} day={day} onEdit={handleEditDay} />
         ))}
       </div>
 

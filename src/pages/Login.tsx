@@ -22,15 +22,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/5 to-accent/20">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-            <Leaf className="h-8 w-8 text-primary-foreground" />
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Card className="w-full max-w-md card-modern">
+        <CardHeader className="text-center space-y-6 pb-8">
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary to-primary-glow rounded-2xl flex items-center justify-center shadow-[var(--shadow-glow)]">
+            <Leaf className="h-10 w-10 text-primary-foreground" />
           </div>
-          <div>
-            <CardTitle className="text-2xl font-bold">Diário Alimentar</CardTitle>
-            <CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold text-gradient">Diário Alimentar</CardTitle>
+            <CardDescription className="text-base">
               Gerencie sua alimentação e acompanhe sua evolução
             </CardDescription>
           </div>
@@ -66,7 +66,7 @@ const Login = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full btn-primary-gradient text-primary-foreground hover:scale-105">
                   Entrar
                 </Button>
               </form>
@@ -107,7 +107,7 @@ const Login = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full btn-primary-gradient text-primary-foreground hover:scale-105">
                   Cadastrar
                 </Button>
               </form>

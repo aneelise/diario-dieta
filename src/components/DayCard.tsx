@@ -4,12 +4,14 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Clock, Droplets, Dumbbell, UtensilsCrossed, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface DayCardProps {
   day: {
     id: string;
     date: string;
     hasCheatMeal: boolean;
+    cheatMealDescription?: string;
     goals: {
       water: number;
       waterGoal: number;
@@ -19,9 +21,11 @@ interface DayCardProps {
     };
     notes?: string;
   };
+  onEdit?: (day: DayCardProps['day']) => void;
 }
 
-export const DayCard = ({ day }: DayCardProps) => {
+export const DayCard = ({ day, onEdit }: DayCardProps) => {
+  const [isEditing, setIsEditing] = useState(false);
   const waterProgress = (day.goals.water / day.goals.waterGoal) * 100;
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -34,20 +38,30 @@ export const DayCard = ({ day }: DayCardProps) => {
 
   const isToday = day.date === new Date().toISOString().split('T')[0];
 
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(day);
+    }
+  };
+
   return (
     <Card className={cn(
-      "transition-all hover:shadow-md",
-      day.hasCheatMeal && "border-warning/50 bg-warning/5",
-      isToday && "ring-2 ring-primary/20"
+      "card-modern transition-all duration-300",
+      day.hasCheatMeal && "border-warning/30 bg-gradient-to-br from-warning/5 to-warning/10",
+      isToday && "ring-2 ring-primary/30 shadow-[var(--shadow-glow)]"
     )}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">
+          <CardTitle className="text-lg font-bold">
             {formatDate(day.date)}
           </CardTitle>
           <div className="flex items-center gap-2">
-            {isToday && <Badge variant="default" className="text-xs">Hoje</Badge>}
-            {day.hasCheatMeal && <Badge variant="outline" className="text-xs text-warning border-warning">Refeição Livre</Badge>}
+            {isToday && <Badge variant="default" className="text-xs btn-primary-gradient">Hoje</Badge>}
+            {day.hasCheatMeal && (
+              <Badge variant="outline" className="text-xs text-warning border-warning/50 bg-warning/10">
+                {day.cheatMealDescription || "Refeição Livre"}
+              </Badge>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -103,7 +117,12 @@ export const DayCard = ({ day }: DayCardProps) => {
         )}
 
         <div className="flex justify-end pt-2">
-          <Button variant="ghost" size="sm" className="gap-1">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="gap-1 hover:bg-primary/10 hover:text-primary"
+            onClick={handleEdit}
+          >
             <Edit3 className="h-3 w-3" />
             Editar
           </Button>
