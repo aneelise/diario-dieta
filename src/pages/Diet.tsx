@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit3, Plus } from "lucide-react";
 import { MealCard } from "@/components/MealCard";
 import { EditMealDialog } from "@/components/EditMealDialog";
+import { AddMealDialog } from "@/components/AddMealDialog";
 import { useDiet, Meal } from "@/hooks/useDiet";
 
 const Diet = () => {
   const { meals, loading, addMeal, updateMeal, deleteMeal } = useDiet();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
 
   const handleEditMeal = (meal: Meal) => {
@@ -23,6 +25,11 @@ const Diet = () => {
 
   const handleDeleteMeal = async (mealId: string) => {
     await deleteMeal(mealId);
+  };
+
+  const handleAddMeal = async (newMeal: Omit<Meal, 'id'>) => {
+    await addMeal(newMeal);
+    setIsAddDialogOpen(false);
   };
 
   return (
@@ -65,11 +72,21 @@ const Diet = () => {
           <p className="text-muted-foreground text-center">
             Adicionar nova refeição
           </p>
-          <Button variant="ghost" className="mt-2">
+          <Button 
+            variant="ghost" 
+            className="mt-2"
+            onClick={() => setIsAddDialogOpen(true)}
+          >
             Clique para adicionar
           </Button>
         </CardContent>
       </Card>
+
+      <AddMealDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onAdd={handleAddMeal}
+      />
 
       {editingMeal && (
         <EditMealDialog
